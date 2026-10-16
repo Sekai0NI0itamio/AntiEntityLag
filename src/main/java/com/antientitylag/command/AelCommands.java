@@ -7,10 +7,10 @@ import com.antientitylag.client.RenderGate;
 import com.antientitylag.config.AntiEntityLagConfig;
 import com.antientitylag.profile.EntityProfiler;
 import com.antientitylag.profile.TickClock;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 
@@ -25,7 +25,7 @@ public final class AelCommands {
     private AelCommands() {
     }
 
-    public static void register(ClientCommandDispatcher dispatcher) {
+    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         dispatcher.register(ClientCommandManager.literal("ael")
                 .then(ClientCommandManager.literal("status")
                         .executes(ctx -> status(ctx.getSource())))
@@ -41,7 +41,7 @@ public final class AelCommands {
                         .executes(ctx -> bench(ctx.getSource()))));
     }
 
-    private static int status(ClientCommandSource source) {
+    private static int status(FabricClientCommandSource source) {
         AntiEntityLagConfig cfg = AntiEntityLagConfig.get();
         EntityProfiler.Snapshot snapshot = EntityProfiler.get().snapshot();
         send(source, "master=" + cfg.masterEnabled
@@ -61,7 +61,7 @@ public final class AelCommands {
         return 1;
     }
 
-    private static int toggleOverlay(ClientCommandSource source) {
+    private static int toggleOverlay(FabricClientCommandSource source) {
         AntiEntityLagConfig cfg = AntiEntityLagConfig.get();
         cfg.diagnosticsOverlay = !cfg.diagnosticsOverlay;
         AntiEntityLagConfig.save();
@@ -69,7 +69,7 @@ public final class AelCommands {
         return 1;
     }
 
-    private static int setEnabled(ClientCommandSource source, boolean value) {
+    private static int setEnabled(FabricClientCommandSource source, boolean value) {
         AntiEntityLagConfig cfg = AntiEntityLagConfig.get();
         cfg.masterEnabled = value;
         TickClock.setArmed(value);
@@ -78,7 +78,7 @@ public final class AelCommands {
         return 1;
     }
 
-    private static int export(ClientCommandSource source) {
+    private static int export(FabricClientCommandSource source) {
         String json = EntityProfiler.get().exportJson();
         Path path = FabricLoader.getInstance().getConfigDir()
                 .resolve("antientitylag-profile-" + System.currentTimeMillis() + ".json");
@@ -94,14 +94,14 @@ public final class AelCommands {
         return 1;
     }
 
-    private static int bench(ClientCommandSource source) {
+    private static int bench(FabricClientCommandSource source) {
         int scenarios = BenchmarkPlan.standardPlan().size();
         send(source, "benchmark plan: " + scenarios + " scenarios (see BENCHMARKS.md).");
         send(source, "compare with: /ael export, toggle /ael enabled, /ael export again.");
         return 1;
     }
 
-    private static void send(ClientCommandSource source, String message) {
+    private static void send(FabricClientCommandSource source, String message) {
         source.sendFeedback(Text.literal("[AntiEntityLag] " + message));
     }
 }
