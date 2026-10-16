@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.antientitylag.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "EntityTickMixin",
+    "EntityRenderDispatcherMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

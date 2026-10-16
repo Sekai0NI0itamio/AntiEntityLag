@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "antientitylag",
+  "version": "${version}",
+  "name": "AntiEntityLag",
+  "description": "Aggressively optimized client-side entity performance: adaptive frustum-visibility caching, crowd render policy, sampled tick profiler, bounded caches. No gameplay or networking semantics changed.",
+  "authors": [
+    "Sekai0NI0itamio"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.antientitylag.AntiEntityLagMod"
+    ]
+  },
+  "mixins": [
+    "antientitylag.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+  },
+  "custom": {
+    "antientitylag:optimized": true
+  }
+}
